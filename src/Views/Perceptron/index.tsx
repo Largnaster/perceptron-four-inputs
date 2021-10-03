@@ -26,22 +26,79 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const theme = createTheme();
 
+const truthTable: number[][] = [
+  [0, 0, 0, 0, 0],
+  [0, 0, 0, 1, 1],
+  [0, 0, 1, 0, 1],
+  [0, 0, 1, 1, 1],
+  [0, 1, 0, 0, 1],
+  [0, 1, 0, 1, 1],
+  [0, 1, 1, 0, 1],
+  [0, 1, 1, 1, 1],
+  [1, 0, 0, 0, 1],
+  [1, 0, 0, 1, 1],
+  [1, 0, 1, 0, 1],
+  [1, 0, 1, 1, 1],
+  [1, 1, 0, 0, 1],
+  [1, 1, 0, 1, 1],
+  [1, 1, 1, 0, 1],
+  [1, 1, 1, 1, 1],
+];
+
 export default function Perceptron() {
   // Cracion de estilos
   const classes = useStyles();
 
   //   Funcion para obtener los datos de entrada
   const getInputData: GetInputs = (i: Inputs) => {
-    const inputs: number[] = [
-      i.error,
-      i.factor,
-      i.w1,
-      i.w2,
-      i.w3,
-      i.w4,
-      i.iteraciones,
-    ];
-    setInputData(inputs);
+    calcY(i.error, i.factor, i.w1, i.w2, i.w3, i.w4, i.iteraciones);
+  };
+
+  // Funcion para calcular y
+  const calcY = (
+    error: number,
+    factor: number,
+    w1: number,
+    w2: number,
+    w3: number,
+    w4: number,
+    iter: number
+  ) => {
+    iter++;
+    if (iter > 2000) {
+      alert("se superó el límite de 2000");
+      return;
+    }
+    console.log(
+      "Cantidad de iteraciones: ",iter
+    );
+    const calcInput: number[] = [error, factor, w1, w2, w3, w4, iter];
+    setInputData(calcInput);
+
+    truthTable.forEach((row) => {
+      let yValue =
+        row[0] * w1 + row[1] * w2 + row[2] * w3 + row[3] * w4 - error;
+      console.log(yValue);
+      if (yValue >= 0) {
+        yValue = 1;
+      } else {
+        yValue = 0;
+      }
+
+      if (yValue !== row[4]) {
+        // Recalcular el error
+        const errorVariation = row[4] - yValue;
+        // Recalcular el factor de aprendizaje
+        const newError = error + -(factor * errorVariation);
+        // Ajustar los pesos
+        const newW1 = w1 + row[0] * errorVariation * factor;
+        const newW2 = w2 + row[1] * errorVariation * factor;
+        const newW3 = w3 + row[2] * errorVariation * factor;
+        const newW4 = w4 + row[3] * errorVariation * factor;
+
+        return calcY(newError, factor, newW1, newW2, newW3, newW4, iter);
+      }
+    });
   };
 
   // Se maneja el cambio de los datos de entrada
@@ -55,7 +112,7 @@ export default function Perceptron() {
         {/* Parte del entrenamiento del perceptron */}
         <Training updateData={getInputData} />
         {/* Esta es la parte de las pruebas */}
-        <Evaluate />
+        <Evaluate inputData={inputData} />
       </Container>
       {/* Esta es la parte donde se muestran los resultados */}
       <TableContainer component={Paper}>
@@ -74,7 +131,6 @@ export default function Perceptron() {
           <TableBody>
             <TableRow>
               {inputData.map((item: number) => {
-                console.log(item);
                 return (
                   <TableCell align="right" key={+new Date() + Math.random()}>
                     {item}

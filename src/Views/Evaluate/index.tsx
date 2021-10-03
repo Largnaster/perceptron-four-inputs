@@ -34,16 +34,41 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function Evaluate() {
+interface InputProps {
+  inputData: number[];
+}
+
+const Evaluate: React.FC<InputProps> = ({ inputData }) => {
   // Cracion de estilos
   const classes = useStyles();
 
   //   Captura de datos en la comprobacion
   const xoneRef = useRef<HTMLInputElement>(null);
   const xtwoRef = useRef<HTMLInputElement>(null);
+  const xthreeRef = useRef<HTMLInputElement>(null);
+  const xfourRef = useRef<HTMLInputElement>(null);
 
   //   variable para almacenar el resultado
   const [result, setResult] = useState(0);
+
+  const getCalc = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+    const calculation: number =
+      (+xoneRef.current!.value * inputData[2]) +
+        (+xtwoRef.current!.value * inputData[3]) +
+        (+xthreeRef.current!.value * inputData[4]) +
+        (+xfourRef.current!.value * inputData[5]) -
+        inputData[0]
+    ;
+    console.log(`
+      (${+xoneRef.current!.value} * ${inputData[2]}) +
+        (${+xtwoRef.current!.value} * ${inputData[3]}) +
+        (${+xthreeRef.current!.value} * ${inputData[4]}) +
+        (${+xfourRef.current!.value} * ${inputData[5]}) -
+        ${inputData[0]}
+     = ${calculation}`)
+    setResult(calculation);
+  };
 
   return (
     <Container className={classes.forms}>
@@ -78,15 +103,37 @@ export default function Evaluate() {
           }}
           variant="outlined"
         />
+        <TextField
+          className={clsx(classes.margin, classes.textField)}
+          id="xthree-field"
+          label="X3"
+          inputRef={xthreeRef}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">X3</InputAdornment>
+            ),
+          }}
+          variant="outlined"
+        />
+        <TextField
+          className={clsx(classes.margin, classes.textField)}
+          id="xfour-field"
+          label="X4"
+          inputRef={xfourRef}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">X4</InputAdornment>
+            ),
+          }}
+          variant="outlined"
+        />
       </FormControl>
-      <Button
-        variant="contained"
-        // onClick={(e) => getCalc(e)}
-        color="primary"
-      >
+      <Button variant="contained" onClick={(e) => getCalc(e)} color="primary">
         Run
       </Button>
       <Typography className={classes.typo}>Y = {result}</Typography>
     </Container>
   );
-}
+};
+
+export default Evaluate;

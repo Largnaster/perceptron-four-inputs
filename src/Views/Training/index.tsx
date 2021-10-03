@@ -53,9 +53,20 @@ const Training: React.FC<ClildProps> = ({ updateData: onClick = () => {} }) => {
   const factorRef = useRef<HTMLInputElement>(null);
   const woneRef = useRef<HTMLInputElement>(null);
   const wtwoRef = useRef<HTMLInputElement>(null);
+  const wthreeRef = useRef<HTMLInputElement>(null);
+  const wfourRef = useRef<HTMLInputElement>(null);
 
   const handleClick = (training: Inputs) => {
-    onClick(training);
+    const newTrainingData:Inputs = {
+      error:+errorRef.current!.value,
+      factor:+factorRef.current!.value,
+      w1:+woneRef.current!.value,
+      w2:+wtwoRef.current!.value,
+      w3:+wthreeRef.current!.value,
+      w4:+wfourRef.current!.value,
+      iteraciones:0
+    }
+    onClick(newTrainingData);
   };
 
   return (
@@ -109,6 +120,30 @@ const Training: React.FC<ClildProps> = ({ updateData: onClick = () => {} }) => {
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">W2</InputAdornment>
+            ),
+          }}
+          variant="outlined"
+        />
+        <TextField
+          className={clsx(classes.margin, classes.textField)}
+          id="wthree-field"
+          label="Weight 3"
+          inputRef={wthreeRef}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">W3</InputAdornment>
+            ),
+          }}
+          variant="outlined"
+        />
+        <TextField
+          className={clsx(classes.margin, classes.textField)}
+          id="wfour-field"
+          label="Weight 4"
+          inputRef={wfourRef}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">W4</InputAdornment>
             ),
           }}
           variant="outlined"
