@@ -60,14 +60,15 @@ const Evaluate: React.FC<InputProps> = ({ inputData }) => {
         (+xfourRef.current!.value * inputData[5]) -
         inputData[0]
     ;
+    const someResult = (Math.exp(calculation)-Math.exp(-calculation))/(Math.exp(calculation)+Math.exp(-calculation))
     console.log(`
       (${+xoneRef.current!.value} * ${inputData[2]}) +
         (${+xtwoRef.current!.value} * ${inputData[3]}) +
         (${+xthreeRef.current!.value} * ${inputData[4]}) +
         (${+xfourRef.current!.value} * ${inputData[5]}) -
         ${inputData[0]}
-     = ${calculation}`)
-    setResult(calculation);
+     = ${calculation} ${someResult}`)
+    setResult(Math.round(someResult));
   };
 
   return (
